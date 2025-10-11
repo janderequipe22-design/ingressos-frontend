@@ -1,0 +1,199 @@
+/* Mobile-first styles (light site; header/hero band dark) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Montserrat:wght@600;700&display=swap');
+:root{ --gap:12px; --radius:10px; --border:#e5e7eb; --text:#111827; --muted:#6b7280; --bg:#ffffff; --panel:#ffffff; --accent:#e04b56; }
+*{ box-sizing:border-box }
+body{ margin:0; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; color:var(--text); background:var(--bg); font-size:16px }
+a{ color:var(--accent); text-decoration:none }
+a:hover{ text-decoration:underline }
+
+.container{ padding:16px; max-width:1100px; margin:0 auto }
+
+/* Nav */
+.nav{ display:flex; align-items:center; gap:12px; padding:12px 16px; background:#1b1b1b; color:#fff; position:sticky; top:0; z-index:10; box-shadow:0 2px 6px rgba(0,0,0,.18) }
+.nav a{ color:#fff }
+.nav-bar{ display:flex; align-items:center; justify-content:space-between; width:100% }
+.nav-logo{ font-family: Montserrat, Inter, sans-serif; font-weight:700; letter-spacing:.3px }
+.nav-toggle{ background:transparent; border:0; display:flex; flex-direction:column; gap:3px; padding:6px; cursor:pointer }
+.nav-burger{ width:22px; height:2px; background:#fff; display:block; border-radius:2px }
+.nav-menu{ display:flex; flex-direction:column; gap:8px; padding:8px 0 }
+.nav-menu:not(.open){ display:none }
+.nav-link{ opacity:.9 }
+/* Hero band (dark) */
+.hero-band{ background:#0f0f0f; }
+.hero-section, .hero-band .container{ padding-top:8px; padding-bottom:24px }
+.hero{ position:relative; overflow:hidden; border-radius:0; background:#0f0f0f; margin-top:8px; border:0; box-shadow:0 4px 18px rgba(0,0,0,.35) }
+.hero img{ width:100%; height:420px !important; object-fit:cover; display:block; border-radius:0 }
+.aside-title{ font-weight:800; margin-bottom:8px }
+.aside-list{ display:grid; gap:10px }
+.aside-item{ display:grid; grid-template-columns: 120px 1fr; gap:10px; align-items:center; text-decoration:none; color:#e5e7eb; background:#1f1f1f; border:1px solid #333; border-radius:10px; overflow:hidden }
+.aside-item:hover{ background:#252525 }
+.aside-thumb img{ width:120px; height:72px; object-fit:cover; display:block }
+.aside-meta{ display:flex; flex-direction:column; gap:2px; padding-right:8px }
+.aside-date{ font-size:12px; color:#9ca3af }
+.aside-name{ font-weight:700; color:#fff; line-height:1.2 }
+.aside-city{ font-size:12px; color:#9ca3af }
+.agenda{ padding-bottom:0 }
+.agenda-foot{ border-bottom:4px solid #e04b56; margin:12px -12px 0 -12px }
+
+/* Dark search bar in hero */
+.top-search{ display:flex; justify-content:center; margin-top:12px }
+.search-box{ display:flex; align-items:center; gap:8px; background:#1f1f1f; border:1px solid #333; border-radius:12px; padding:10px 14px; width:min(560px, 90vw); box-shadow:0 2px 10px rgba(0,0,0,.35) }
+.search-box .icon{ color:#9ca3af }
+.search-box input{ flex:1; background:transparent; border:0; outline:none; color:#e5e7eb; font-size:15px }
+.hero-dots{ position:absolute; bottom:8px; right:8px; display:flex; gap:6px }
+.hero-dot{ width:10px; height:10px; border-radius:50%; background:#ffffff66 }
+.hero-dot.active{ background:#fff }
+
+/* Search bar */
+.search{ display:flex; gap:12px; align-items:center; justify-content:space-between; margin-top:16px }
+.search h2{ margin:0; font-size:20px; font-family: Montserrat, Inter, sans-serif }
+.search-input{ flex:1; max-width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:#ffffff; color:var(--text) }
+
+/* Grid */
+.grid{ margin-top:12px; display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:var(--gap) }
+
+/* Card */
+.card{ border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:var(--panel); box-shadow:0 1px 3px rgba(0,0,0,.25) }
+.card:hover{ box-shadow:0 6px 18px rgba(0,0,0,.35) }
+.card-img{ width:100%; height:140px; object-fit:cover; display:block }
+.card-body{ padding:12px }
+.card-title{ font-size:16px; font-weight:700; margin:4px 0; font-family: Montserrat, Inter, sans-serif }
+.card-meta{ font-size:12px; color:var(--muted); margin:2px 0 }
+.card-desc{ font-size:13px; color:var(--muted); margin-top:6px }
+.card-link{ display:inline-block; margin-top:8px }
+
+/* New event card info layout */
+.ev-row{ display:grid; grid-template-columns: 56px 1fr; gap:12px; align-items:flex-start }
+.ev-date{ width:56px; min-height:56px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#ffffff; border:1px solid #e5e7eb; border-radius:8px }
+.ev-day{ font-size:20px; font-weight:800; line-height:1; color:#dc2626 }
+.ev-month{ margin-top:4px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.4px; color:#9ca3af }
+.ev-info{ display:flex; flex-direction:column; gap:4px }
+.ev-title{ margin:0; font-size:15px; font-weight:800; letter-spacing:.2px; color:#111827; font-family: Montserrat, Inter, sans-serif }
+.ev-city{ font-size:13px; color:#6b7280 }
+.ev-venue{ font-size:12px; color:#9ca3af; text-transform:uppercase; letter-spacing:.3px }
+
+/* Ticket blocks */
+.ticket-card{ border:1px dashed #777; padding:12px; background:var(--panel); display:flex; gap:12px; align-items:center }
+.ticket-qr{ width:140px; height:140px; object-fit:contain }
+.ticket-info{ flex:1 }
+
+/* Event page */
+.block{ border:1px solid var(--border); padding:12px; border-radius:var(--radius); background:var(--panel) }
+.total{ margin-top:8px; font-weight:700 }
+.actions{ margin-top:8px }
+
+/* Footer */
+.footer{ margin-top:32px; padding:16px 8px; border-top:1px solid var(--border); text-align:center; color:var(--muted) }
+
+/* Event detail (light layout) */
+.event-page{ --ep-bg:#fff; --ep-text:#222; --ep-muted:#667085; --ep-border:#e5e7eb; --ep-accent:#16a34a; --ep-accent-dark:#15803d; --ep-gray:#f8fafc; }
+.event-page .container{ background:var(--ep-bg); color:var(--ep-text); padding:0; border-radius:8px; }
+.event-header{ display:grid; grid-template-columns: 96px 1fr; gap:16px; padding:12px 0; }
+.event-date{ display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px solid var(--ep-border); border-radius:8px; padding:10px 8px; background:#fff; width:96px }
+.event-date .day{ font-size:34px; font-weight:800; line-height:1; color:#50130054 }
+.event-date .week, .event-date .month{ display:inline-block; margin-top:6px; padding:2px 8px; border-radius:4px; background:#9ca3af; color:#fff; font-size:12px; font-weight:700 }
+.event-meta{ display:flex; flex-direction:column; gap:6px; align-self:center }
+.event-title{ font-family: Montserrat, Inter, sans-serif; font-size:28px; font-weight:800; margin:0; color:#111827 }
+.event-info{ display:flex; flex-direction:column; gap:4px; color:#6b7280; font-size:14px }
+.event-poster{ width:100%; height:auto; display:block; border-bottom:1px solid var(--ep-border) }
+
+.ticket-section{ padding:8px 16px 16px; }
+.ticket-table{ width:100%; border:1px solid var(--ep-border); border-radius:8px; overflow:hidden; background:#fff }
+.ticket-row{ display:grid; grid-template-columns: 1fr auto auto auto; gap:8px; align-items:center; padding:12px 12px; border-bottom:1px solid var(--ep-border) }
+.ticket-row:last-child{ border-bottom:0 }
+.ticket-name{ font-weight:700 }
+.ticket-note{ font-size:12px; color:var(--ep-muted) }
+.ticket-price, .ticket-sub{ font-weight:600 }
+.qty{ display:inline-flex; align-items:center; gap:8px; border:1px solid var(--ep-border); border-radius:6px; padding:4px 6px; }
+.qty button{ background:#fff; border:1px solid var(--ep-border); width:28px; height:28px; border-radius:6px; cursor:pointer }
+.qty button:active{ transform: scale(0.98) }
+.qty .val{ min-width:20px; text-align:center }
+
+.total-bar{ position:sticky; bottom:0; display:flex; justify-content:space-between; align-items:center; padding:12px 12px; border:1px solid var(--ep-border); border-radius:8px; background:linear-gradient(#f8fafc,#f8fafc); margin-top:12px; box-shadow:0 -4px 12px rgba(0,0,0,.04) }
+.buy-btn{ background:var(--ep-accent); color:#fff; border:0; padding:10px 14px; border-radius:8px; font-weight:700; cursor:pointer }
+.buy-btn:disabled{ background:#9ca3af; cursor:not-allowed }
+.buy-btn:not(:disabled):hover{ background:var(--ep-accent-dark) }
+
+.info-section{ margin-top:16px; border-top:1px solid var(--ep-border); padding:16px }
+.info-section h3{ margin:0 0 8px 0; font-size:16px }
+.info-list{ padding-left:18px; color:#111827 }
+.info-list li{ margin:6px 0 }
+
+/* Skeleton loading */
+.skeleton{ position:relative; overflow:hidden; background:#f3f4f6; border-radius:8px }
+.skeleton::after{ content:''; position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent); transform:translateX(-100%); animation:skeleton 1.2s infinite }
+@keyframes skeleton{ to{ transform:translateX(100%) } }
+.skeleton-line{ height:14px; margin:6px 0; }
+.skeleton-img{ height:220px }
+.skeleton-chip{ width:90px; height:26px; border-radius:10px }
+
+/* Total breakdown */
+.total-breakdown{ font-size:12px; color:#6b7280 }
+.total-breakdown div{ line-height:1.2 }
+
+/* Event top two-column layout */
+.event-top{ display:grid; grid-template-columns: 1fr; gap:16px; padding:16px; border-bottom:1px solid var(--ep-border) }
+.event-left{ width:100% }
+.event-right{ width:100% }
+@media (min-width: 768px){
+  .event-top{ grid-template-columns: clamp(320px, 35vw, 400px) 1fr; align-items:start; }
+  .event-header{ padding:0; border-bottom:0; }
+  .event-poster{ border:1px solid var(--ep-border); border-radius:8px }
+}
+
+/* Desktop adjustments for scale and readability */
+@media (min-width: 1024px){
+  body{ font-size:17px; }
+  .hero img{ height:480px !important; }
+  .search-box input{ font-size:16.5px; }
+  .grid{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+}
+
+/* Tablet grid refinement */
+@media (min-width: 768px) and (max-width: 1023.98px){
+  .grid{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+}
+
+/* Larger typographic scale on desktop */
+@media (min-width: 1024px){
+  .card-img{ height:180px; }
+  .card-title{ font-size:18px; }
+  .ev-day{ font-size:24px; }
+  .event-title{ font-size:32px; }
+}
+
+/* Right side info and countdown */
+.event-right-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:8px }
+.countdown{ text-align:right; font-size:12px; color:#b91c1c }
+.countdown .nums{ display:flex; gap:10px; justify-content:flex-end; font-weight:800; color:#dc2626 }
+.countdown .nums span{ display:flex; flex-direction:column; align-items:center }
+.countdown .label{ font-size:10px; color:#9ca3af }
+
+/* Table header */
+.ticket-head{ position:sticky; top:0; z-index:5; display:grid; grid-template-columns: 1fr 140px 120px 100px 120px; gap:8px; padding:10px 12px; background:#f3f4f6; border:1px solid var(--ep-border); border-radius:8px; font-weight:700; color:#6b7280; text-transform:uppercase; font-size:12px }
+.ticket-table{ margin-top:8px }
+.ticket-row{ grid-template-columns: 1fr 140px 120px 100px 120px; background:#fff }
+.ticket-row + .ticket-row{ border-top:1px solid var(--ep-border) }
+.ticket-row:hover{ background:#f9fafb }
+.qty{ justify-self:center }
+.ticket-price,.ticket-fee,.ticket-sub{ text-align:right }
+
+/* Ticket name/desc */
+.ticket-name{ font-weight:800; color:#111827 }
+.ticket-note{ color:#9ca3af }
+.ticket-extra{ grid-column:1 / -1; color:#6b7280; font-size:12px; margin:6px 12px 12px 12px }
+
+/* Sector chip */
+.sector-chip{ padding:6px 10px; background:#e5e7eb; color:#111827; border-radius:10px; display:inline-block; font-weight:700; }
+.sector-bar{ margin-top:8px; padding:6px 0; background:#f3f4f6; border:1px solid var(--ep-border); border-radius:8px; display:flex; justify-content:center }
+
+/* Qty buttons circular */
+.qty button{ border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-weight:800; transition:transform .06s ease }
+.qty button:first-child{ color:#6b7280; border-color:#d1d5db }
+.qty button:last-child{ color:#16a34a; border-color:#86efac }
+.qty button:hover{ transform:scale(1.04) }
+.qty button:focus{ outline:3px solid #93c5fd; outline-offset:2px }
+
+/* Promotional label and disclaimer */
+.lot-label{ color:#b91c1c; font-weight:800; text-transform:uppercase; font-size:12px; margin-bottom:6px }
+.ticket-disclaimer{ grid-column:1 / -1; color:#6b7280; font-size:12px; margin:6px 0 12px 0 }

@@ -1,0 +1,14 @@
+/* Desktop overrides */
+@media (min-width: 768px){
+  .hero img{ height:320px }
+  .grid{ grid-template-columns: repeat(4, minmax(0,1fr)) }
+  .card-img{ height:160px }
+  .container{ padding:24px }
+
+  /* Nav desktop: links em linha e sem hambúrguer */
+  .nav-menu{ display:flex !important; flex-direction:row; gap:16px; padding:0; margin-left:auto }
+  .nav-toggle{ display:none }
+  .only-desktop{ display:block }
+  .only-mobile{ display:none }
+  .btn-login{ background:#e04b56; padding:8px 12px; border-radius:8px; font-weight:600 }
+}
