@@ -174,7 +174,9 @@ export default function EventPage() {
           .ticket-price, .ticket-fee, .ticket-sub{ text-align:right }
           .ticket-sub{ font-weight:600 }
           .total-bar{ margin-top:10px; border-top:1px solid #e5e7eb; padding:12px; display:flex; align-items:center; justify-content:space-between }
-          .buy-btn{ background:#111827; color:#fff; border:0; border-radius:10px; padding:10px 14px; font-weight:600 }
+          .buy-btn{ background:#00AF42; color:#fff; border:0; border-radius:10px; padding:10px 14px; font-weight:600; box-shadow:0 4px 14px rgba(0,175,66,.25) }
+          .buy-btn:hover{ filter:brightness(.96) }
+          .buy-btn:disabled{ background:#94d3ad; cursor:not-allowed; box-shadow:none }
           .info-section{ margin-top:16px }
 
           /* Mobile adjustments */

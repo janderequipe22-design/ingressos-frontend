@@ -20,7 +20,7 @@ export default function GalleryPage(){
     if(!confirm('Remover imagem?')) return;
     setBusy(true);
     try{
-      await api.delete(`/events/${id}/gallery/${imgId}`);
+      await api.delete(`/events/${id}/gallery/${imgId}`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')||''}` }});
       setItems(list=>list.filter(i=>i._id!==imgId));
     }finally{ setBusy(false); }
   }
@@ -38,7 +38,7 @@ export default function GalleryPage(){
     setBusy(true); setProgress(0);
     try{
       const r = await api.post(`/events/${id}/gallery`, fd, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')||''}` },
         onUploadProgress: (ev)=>{
           if(!ev.total) return;
           setProgress(Math.round((ev.loaded/ev.total)*100));
@@ -50,7 +50,8 @@ export default function GalleryPage(){
         return [...r.data, ...withoutTmp];
       });
     }catch(err){
-      alert(err?.response?.data?.error || 'Falha ao enviar imagens');
+      const msg = err?.response?.data?.error || err?.message || 'Falha ao enviar imagens';
+      alert(msg);
       // remove previews on error
       setItems(list=>list.filter(i=>!String(i._id).startsWith(tmpKey)));
     }finally{ setBusy(false); setProgress(0); e.target.value=''; }
@@ -58,6 +59,7 @@ export default function GalleryPage(){
 
   return (
     <DashboardLayout title="Galeria do Evento">
+      <div style={{color:'#6b7280', fontSize:12, marginBottom:8}}>Formatos suportados: JPG, PNG, WebP, GIF, AVIF. Tamanho máximo por imagem: <b>10 MB</b>. Dica: use imagens otimizadas para carregar mais rápido.</div>
       <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12}}>
         <div>Gerencie as fotos exibidas na página do evento.</div>
         <label style={{background:'#111827', color:'#fff', padding:'8px 12px', borderRadius:8, cursor:'pointer'}}>

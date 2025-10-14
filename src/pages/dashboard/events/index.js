@@ -10,7 +10,7 @@ export default function EventsPage(){
   const [mounted, setMounted] = useState(false);
   const [error, setError] = useState('');
   const [userEmail, setUserEmail] = useState('');
-  const [publicEvents, setPublicEvents] = useState([]);
+  // Removido: lista de eventos públicos/claim
 
   useEffect(()=>{ setMounted(true); }, []);
 
@@ -29,8 +29,7 @@ export default function EventsPage(){
       .then(r=>setEvents(r.data))
       .catch(e=>{ setError(e?.response?.data?.error || 'Falha ao carregar eventos'); })
       .finally(()=>setLoading(false));
-    // Load public events (best effort) to allow claiming
-    api.get('/events').then(r=>setPublicEvents(r.data||[])).catch(()=>{});
+    // Removido: carregamento de eventos públicos
   },[mounted]);
 
   if(!mounted){
@@ -88,33 +87,7 @@ export default function EventsPage(){
         </div>
       )}
 
-      {/* Public events that are not mine (allow claiming) */}
-      <div style={{marginTop:20}}>
-        <div style={{fontWeight:500, marginBottom:8, fontSize:18}}>Eventos públicos (não atribuídos)</div>
-        <div style={{display:'grid', gap:10}}>
-          {publicEvents
-            .filter(pe => !events.some(me => me._id === pe._id))
-            .map(pe => (
-              <div key={pe._id} style={{background:'#fff', border:'1px dashed #e5e7eb', borderRadius:8, padding:12}}>
-                <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                  <div>
-                    <div style={{fontWeight:500, fontSize:16}}>{pe.name}</div>
-                    <div style={{color:'#6b7280', fontSize:14}}>{new Date(pe.date).toLocaleString()} — {pe.location}</div>
-                  </div>
-                  <div>
-                    <button title="Transferir este evento para minha conta" onClick={async()=>{
-                      try {
-                        await api.post(`/events/${pe._id}/claim`);
-                        const r = await api.get('/events/mine');
-                        setEvents(r.data);
-                      } catch (e) { alert(e?.response?.data?.error || 'Falha ao reivindicar'); }
-                    }} style={{border:'1px solid #10b981', color:'#065f46', background:'#ecfdf5', borderRadius:8, padding:'6px 10px'}}>Vincular a mim</button>
-                  </div>
-                </div>
-              </div>
-            ))}
-        </div>
-      </div>
+      {/* Removido: seção de eventos públicos/claim */}
     </DashboardLayout>
   );
 }

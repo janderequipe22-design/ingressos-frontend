@@ -152,16 +152,16 @@ export default function SettingsPage(){
                     const fd = new FormData();
                     fd.append('file', f);
                     try {
-                      const r = await fetch('/api/uploads', { method:'POST', body: fd, headers: { Authorization: `Bearer ${localStorage.getItem('token')||''}` } });
-                      const j = await r.json();
-                      if(!r.ok) throw new Error(j?.error||'Falha no upload');
-                      setForm(v=>({ ...v, logoUrl: j.url }));
+                      const r = await api.post('/uploads', fd, { headers: { Authorization: `Bearer ${localStorage.getItem('token')||''}` } });
+                      setForm(v=>({ ...v, logoUrl: r.data.url }));
                     } catch (err) {
-                      alert(err.message||'Falha ao enviar');
+                      const msg = err?.response?.data?.error || err?.message || 'Falha ao enviar';
+                      alert(msg);
                     } finally { e.target.value = ''; }
                   }}/>
                 </label>
               </div>
+              <div style={{marginTop:6, fontSize:12, color:'#6b7280'}}>Após enviar a imagem, clique em <b>Salvar configurações</b> para persistir o logo.</div>
               {!!form.logoUrl && (
                 <div style={{marginTop:8}}>
                   <img src={form.logoUrl} alt="Pré-visualização do logo" style={{height:36}}/>
@@ -170,14 +170,27 @@ export default function SettingsPage(){
             </div>
             {form.paymentProvider === 'mercadopago' && (
               <div>
-                <label style={{display:'block', fontSize:13, color:'#6b7280'}}>Public Key (client)</label>
-                <input placeholder="MP_PUBLIC_KEY (opcional para frontend)" value={form.mpPublicKey} onChange={e=>setForm({...form, mpPublicKey:e.target.value})} style={{width:'100%', padding:'10px 12px', border:'1px solid #e5e7eb', borderRadius:8}} />
+                <label style={{display:'block', fontSize:13, color:'#6b7280'}}>Access Token</label>
+                <input placeholder="APP_USR-... (Access Token)" value={form.apiKey} onChange={e=>setForm({...form, apiKey:e.target.value})} style={{width:'100%', padding:'10px 12px', border:'1px solid #e5e7eb', borderRadius:8}} />
+                <div style={{height:10}}/>
+                <label style={{display:'block', fontSize:13, color:'#6b7280'}}>Public Key</label>
+                <input placeholder="APP_USR-... (Public Key)" value={form.mpPublicKey} onChange={e=>setForm({...form, mpPublicKey:e.target.value})} style={{width:'100%', padding:'10px 12px', border:'1px solid #e5e7eb', borderRadius:8}} />
               </div>
             )}
 
-            <div>
-              <label style={{display:'block', fontSize:13, color:'#6b7280'}}>Webhook URL</label>
-              <input placeholder="https://seu-dominio.com/webhook" value={form.webhookUrl} onChange={e=>setForm({...form, webhookUrl:e.target.value})} style={{width:'100%', padding:'10px 12px', border:'1px solid #e5e7eb', borderRadius:8}} />
+            {form.paymentProvider !== 'mercadopago' && (
+              <div>
+                <label style={{display:'block', fontSize:13, color:'#6b7280'}}>Webhook URL</label>
+                <input placeholder="https://seu-dominio.com/api/webhook/mp" value={form.webhookUrl} onChange={e=>setForm({...form, webhookUrl:e.target.value})} onFocus={()=>{
+                  if(!form.webhookUrl && typeof window!=='undefined') setForm(v=>({...v, webhookUrl: `${window.location.origin}/api/webhook/mp`}));
+                }} style={{width:'100%', padding:'10px 12px', border:'1px solid #e5e7eb', borderRadius:8}} />
+              </div>
+            )}
+
+            <div style={{display:'flex', justifyContent:'flex-end'}}>
+              <button disabled={saving} onClick={save} style={{background:'#111827', color:'#fff', border:0, padding:'10px 14px', borderRadius:8, fontWeight:700}}>
+                {saving ? 'Salvando...' : 'Salvar configurações'}
+              </button>
             </div>
           </div>
         </div>

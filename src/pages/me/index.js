@@ -275,11 +275,20 @@ async function shareTicketAsImage({ eventName, ticketType, code, ticketId, qrDat
                       const inviteInfo = 'Compartilhamento por imagem';
                       return (
                       <div key={t._id} style={{display:'flex', gap:12, alignItems:'center', border:'1px dashed #9ca3af', borderRadius:8, padding:12}}>
-                        <img
-                          src={t.qrDataUrl || `https://chart.googleapis.com/chart?cht=qr&chs=220x220&chl=${encodeURIComponent(`/validator?id=${t._id}`)}`}
-                          alt={`QR ${t._id}`}
-                          style={{width:180, height:180, background:'#fff'}}
-                        />
+                        {(() => {
+                          const src = t.qrDataUrl || (() => {
+                            const origin = (typeof window !== 'undefined') ? window.location.origin : '';
+                            const url = origin ? `${origin}/validator?id=${t._id}` : `/validator?id=${t._id}`;
+                            return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(url)}`;
+                          })();
+                          return (
+                            <img
+                              src={src}
+                              alt={`QR ${t._id}`}
+                              style={{width:180, height:180, background:'#fff'}}
+                            />
+                          );
+                        })()}
                         <div style={{flex:1}}>
                           <div><b>Evento:</b> {row.order.items?.[0]?.eventName || '-'}</div>
                           <div style={{marginTop:4}}><b>Tipo:</b> {t.ticketTypeName}</div>

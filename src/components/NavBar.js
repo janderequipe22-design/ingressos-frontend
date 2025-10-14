@@ -39,7 +39,17 @@ export default function NavBar() {
     // Load logo from backend if not set via env
     if (!process.env.NEXT_PUBLIC_LOGO_URL) {
       api.get('/settings/public').then(r=>{
-        if (r?.data?.logoUrl) setLogoUrl(r.data.logoUrl);
+        if (r?.data?.logoUrl) {
+          let u = r.data.logoUrl;
+          try{
+            if (typeof window !== 'undefined'){
+              const host = window.location.hostname;
+              // Substitui 127.0.0.1/localhost pelo host atual e força porta 8000 para servir arquivos do backend
+              u = u.replace(/https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/i, `${window.location.protocol}//${host}:8000`);
+            }
+          }catch{}
+          setLogoUrl(u);
+        }
       }).catch(()=>{});
     }
     // Detect admin by token email
@@ -83,7 +93,7 @@ export default function NavBar() {
     try{
       const payload = { name, email, whatsapp };
       if (password) payload.password = password;
-      const r = await api.post('/auth/register', payload);
+      const r = await api.post('/auth/register-customer', payload);
       setToken(r.data.token);
       setLogged(true);
       setShowLogin(false);
@@ -118,13 +128,6 @@ export default function NavBar() {
           {/* Ações à direita: quando logado, mostrar Minha conta (email) e Sair; quando não logado, link para /login */}
           {logged === true ? (
             <div className="auth">
-              <Link href="/dashboard" className="btn iconred" title="Minha conta">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8"/>
-                  <path d="M12 12a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5Z" stroke="currentColor" strokeWidth="1.8"/>
-                  <path d="M6.5 18.2c1.4-2.2 3.8-3.7 5.5-3.7s4.1 1.5 5.5 3.7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-                </svg>
-              </Link>
               <Link href="/dashboard" className="btn account" title={userEmail || 'Minha conta'}>
                 <span className="ulabel">{userEmail || 'Minha conta'}</span>
               </Link>
@@ -132,13 +135,6 @@ export default function NavBar() {
             </div>
           ) : logged === false ? (
             <div className="auth">
-              <button type="button" className="btn iconred" title="Minha conta" onClick={()=>{ setTab('login'); setShowLogin(true); }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8"/>
-                  <path d="M12 12a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5Z" stroke="currentColor" strokeWidth="1.8"/>
-                  <path d="M6.5 18.2c1.4-2.2 3.8-3.7 5.5-3.7s4.1 1.5 5.5 3.7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-                </svg>
-              </button>
               <button type="button" className="btn account" onClick={()=>{ setTab('login'); setShowLogin(true); }}><span className="ulabel">Minha conta</span></button>
             </div>
           ) : null}
@@ -204,32 +200,31 @@ export default function NavBar() {
       )}
 
       <style jsx>{`
-        .nav{ position:sticky; top:0; z-index:50; background:#141518; border-bottom:0 }
-        .wrap{ height:64px; display:grid; grid-template-columns: auto 1fr auto; align-items:center; gap:18px; padding:0 12px; max-width:1200px; margin:0 auto }
-        .logoImg{ height:42px; width:auto; display:block }
+        .nav{ position:sticky; top:0; z-index:50; background:linear-gradient(180deg, #2433b0 0%, #212685 100%); border-bottom:0 }
+        .wrap{ height:68px; display:grid; grid-template-columns: auto 1fr auto; align-items:center; gap:18px; padding:0 16px; max-width:1200px; margin:0 auto }
+        .logoImg{ height:36px; width:auto; display:block }
         .center{ display:flex; justify-content:center; align-items:center; position:relative; z-index:1 }
-        .searchbar{ display:flex; align-items:center; gap:8px; background:#111317; border:1px solid #2f3541; border-radius:14px; padding:10px 14px; width:min(560px, 58vw); margin:0 auto; box-shadow:0 2px 10px rgba(0,0,0,.25) }
-        .searchbar .icon{ color:#9ca3af }
-        .searchbar input{ flex:1; background:transparent; border:0; outline:none; color:#e5e7eb; font-size:14px }
-        .link{ color:#e5e7eb; text-decoration:none; padding:8px 10px; border-radius:8px; font-weight:400 !important; text-transform:uppercase !important; font-size:14px !important }
-        .link:hover{ background:#2b2f3a }
-        .link.active{ background:#384152 }
-        .right{ display:flex; justify-content:flex-end; align-items:center; gap:22px; justify-self:end; margin-left:auto; margin-right:0; position:relative; z-index:2 }
-        .menu{ display:flex; gap:22px; align-items:center }
+        .searchbar{ display:flex; align-items:center; gap:8px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); border-radius:999px; padding:8px 14px; width:min(520px, 52vw); margin:0 auto }
+        .searchbar .icon{ color:#e5e7eb }
+        .searchbar input{ flex:1; background:transparent; border:0; outline:none; color:#fff; font-size:14px }
+        .link{ color:#eaf2ff; text-decoration:none; padding:10px 12px; border-radius:999px; font-weight:600 !important; text-transform:uppercase !important; font-size:13px !important; letter-spacing:.3px }
+        .link:hover{ background:rgba(255,255,255,.15) }
+        .link.active{ background:rgba(255,255,255,.22) }
+        .right{ display:flex; justify-content:flex-end; align-items:center; gap:18px; justify-self:end; margin-left:auto; margin-right:0; position:relative; z-index:2 }
+        .menu{ display:flex; gap:12px; align-items:center }
         .auth{ display:flex; gap:8px; align-items:center }
         .user{ position:relative }
-        .avatar{ width:34px; height:34px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; background:transparent; color:#e5e7eb; border:1px solid #374151; cursor:pointer }
-        .dropdown{ position:absolute; top:40px; right:0; background:#111827; border:1px solid #1f2937; border-radius:8px; min-width:160px; box-shadow:0 8px 20px rgba(0,0,0,.35); padding:6px }
+        .avatar{ width:34px; height:34px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; background:transparent; color:#e5e7eb; border:1px solid rgba(255,255,255,.35); cursor:pointer }
+        .dropdown{ position:absolute; top:40px; right:0; background:#0b144b; border:1px solid rgba(255,255,255,.2); border-radius:8px; min-width:160px; box-shadow:0 8px 20px rgba(0,0,0,.35); padding:6px }
         .d-item{ width:100%; text-align:left; color:#e5e7eb; text-decoration:none; background:transparent; border:0; padding:8px 10px; display:block; border-radius:6px; cursor:pointer }
-        .d-item:hover{ background:#1f2937 }
+        .d-item:hover{ background:rgba(255,255,255,.06) }
         .d-item.danger{ color:#fca5a5 }
-        .btn{ padding:8px 12px; border-radius:8px; text-decoration:none; font-weight:600; cursor:pointer; line-height:1 }
-        .btn.ghost{ color:#e5e7eb; border:1px solid #374151; background:transparent }
+        .btn{ padding:8px 12px; border-radius:999px; text-decoration:none; font-weight:700; cursor:pointer; line-height:1 }
+        .btn.ghost{ color:#e5e7eb; border:1px solid rgba(255,255,255,.35); background:transparent }
         .btn.solid{ background:#ef4444; color:#fff; border:0 }
-        .btn.account{ background:#2a2f3a; color:#e5e7eb; border:1px solid #374151; border-radius:12px; font-weight:400 !important; padding:8px 16px; display:inline-flex; align-items:center; text-transform:uppercase !important; font-size:14px !important }
-        .btn.iconred{ background:#ef4444; color:#fff; border:0; width:38px; height:38px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center }
-        .btn.iconred:hover{ background:#f05252 }
-        .btn.account .ulabel{ line-height:1; text-transform:uppercase !important; font-size:14px !important; font-weight:400 !important }
+        .btn.account{ background:#fbbf24; color:#111827; border:0; border-radius:999px; font-weight:700 !important; padding:10px 16px; display:inline-flex; align-items:center; text-transform:uppercase !important; font-size:13px !important }
+        
+        .btn.account .ulabel{ line-height:1; text-transform:uppercase !important; font-size:13px !important; font-weight:700 !important }
         .hamb{ display:none; background:transparent; border:0; width:44px; height:44px; align-items:center; justify-content:center }
         .hamb span{ display:block; width:26px; height:3px; background:#e5e7eb; margin:4px 0; border-radius:2px }
         .mobile{ display:none }
@@ -240,11 +235,11 @@ export default function NavBar() {
           .right{ display:none }
           .hamb{ display:flex; justify-self:end; flex-direction:column }
           .backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:54; display:block }
-          .mobile{ display:flex; flex-direction:column; padding:12px 16px; background:#0f1116; position:fixed; top:64px; left:0; right:0; bottom:0; z-index:55; border-top:0; box-shadow:0 8px 24px rgba(0,0,0,.45); overflow:auto; transform:translateY(-8px); opacity:0; transition:transform .2s ease, opacity .2s ease }
+          .mobile{ display:flex; flex-direction:column; padding:12px 16px; background:#0b144b; position:fixed; top:68px; left:0; right:0; bottom:0; z-index:55; border-top:0; box-shadow:0 8px 24px rgba(0,0,0,.45); overflow:auto; transform:translateY(-8px); opacity:0; transition:transform .2s ease, opacity .2s ease }
           .mobile.open{ opacity:1; transform:translateY(0) }
-          .m-item{ color:#e5e7eb; text-decoration:none; padding:14px 6px; border-bottom:1px solid #1f2937; text-transform:uppercase !important; font-size:14px !important; font-weight:400 !important }
-          .m-top{ display:flex; justify-content:flex-end; padding-bottom:6px; margin-bottom:6px; border-bottom:1px solid #1f2937 }
-          .m-close{ background:transparent; color:#e5e7eb; border:1px solid #374151; border-radius:8px; width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; font-size:18px }
+          .m-item{ color:#e5e7eb; text-decoration:none; padding:14px 6px; border-bottom:1px solid rgba(255,255,255,.12); text-transform:uppercase !important; font-size:14px !important; font-weight:600 !important }
+          .m-top{ display:flex; justify-content:flex-end; padding-bottom:6px; margin-bottom:6px; border-bottom:1px solid rgba(255,255,255,.12) }
+          .m-close{ background:transparent; color:#e5e7eb; border:1px solid rgba(255,255,255,.35); border-radius:8px; width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; font-size:18px }
         }
         .modal{ position:fixed; inset:0; background:rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; z-index:60 }
         .modal-card{ width:100%; max-width:380px; background:#fff; border-radius:12px; border:1px solid #e5e7eb; padding:16px }

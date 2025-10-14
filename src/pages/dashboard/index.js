@@ -238,6 +238,7 @@ export default function Dashboard() {
             <div>
               <label style={{display:'block', fontSize:12, color:'#6b7280'}}>Imagem (URL) — Banner grande</label>
               <input placeholder="https://..." value={form.imageUrl} onChange={e=>setForm({...form, imageUrl: e.target.value})} style={{width:'100%', padding:'10px 12px', border:'1px solid #e5e7eb', borderRadius:8}} />
+              <div style={{marginTop:6, fontSize:12, color:'#6b7280'}}>Sugestão de tamanho: <b>1920x600 px</b> (até ~500 KB). Formatos: JPG/PNG/WebP.</div>
               <div style={{marginTop:8, display:'flex', gap:8, alignItems:'center'}}>
                 <label style={{border:'1px solid #e5e7eb', borderRadius:8, padding:'6px 10px', background:'#fff', cursor:'pointer'}}>
                   Enviar arquivo
@@ -247,11 +248,12 @@ export default function Dashboard() {
                     const fd = new FormData();
                     fd.append('file', f);
                     try{
-                      const r = await fetch('/api/uploads', { method:'POST', body: fd, headers: { Authorization: `Bearer ${localStorage.getItem('token')||''}` } });
-                      const j = await r.json();
-                      if(!r.ok) throw new Error(j?.error||'Falha no upload');
-                      setForm(v=>({ ...v, imageUrl: j.url }));
-                    }catch(err){ alert(err.message||'Falha ao enviar'); }
+                      const r = await api.post('/uploads', fd, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('token')||''}` } });
+                      setForm(v=>({ ...v, imageUrl: r.data.url }));
+                    }catch(err){
+                      const msg = err?.response?.data?.error || err?.message || 'Falha ao enviar';
+                      alert(msg);
+                    }
                     finally{ e.target.value=''; }
                   }}/>
                 </label>
@@ -268,6 +270,7 @@ export default function Dashboard() {
             <div>
               <label style={{display:'block', fontSize:12, color:'#6b7280'}}>Imagem do Card (URL) — Miniatura</label>
               <input placeholder="https://..." value={form.cardImageUrl} onChange={e=>setForm({...form, cardImageUrl: e.target.value})} style={{width:'100%', padding:'10px 12px', border:'1px solid #e5e7eb', borderRadius:8}} />
+              <div style={{marginTop:6, fontSize:12, color:'#6b7280'}}>Sugestão de tamanho: <b>600x400 px</b> (até ~200 KB). Formatos: JPG/PNG/WebP.</div>
               <div style={{marginTop:8, display:'flex', gap:8, alignItems:'center'}}>
                 <label style={{border:'1px solid #e5e7eb', borderRadius:8, padding:'6px 10px', background:'#fff', cursor:'pointer'}}>
                   Enviar arquivo
@@ -277,11 +280,12 @@ export default function Dashboard() {
                     const fd = new FormData();
                     fd.append('file', f);
                     try{
-                      const r = await fetch('/api/uploads', { method:'POST', body: fd, headers: { Authorization: `Bearer ${localStorage.getItem('token')||''}` } });
-                      const j = await r.json();
-                      if(!r.ok) throw new Error(j?.error||'Falha no upload');
-                      setForm(v=>({ ...v, cardImageUrl: j.url }));
-                    }catch(err){ alert(err.message||'Falha ao enviar'); }
+                      const r = await api.post('/uploads', fd, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('token')||''}` } });
+                      setForm(v=>({ ...v, cardImageUrl: r.data.url }));
+                    }catch(err){
+                      const msg = err?.response?.data?.error || err?.message || 'Falha ao enviar';
+                      alert(msg);
+                    }
                     finally{ e.target.value=''; }
                   }}/>
                 </label>

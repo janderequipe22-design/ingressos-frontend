@@ -205,10 +205,11 @@ export default function Checkout() {
       }
     } catch (e) {
       const data = e?.response?.data;
-      const detail = data?.detail || data?.message || '';
-      const cause = Array.isArray(data?.cause) && data.cause.length ? `\nCausa: ${data.cause.map(c=>c.description||c.code).join(', ')}` : '';
-      alert((data?.error || 'Falha ao iniciar Mercado Pago') + (detail? `\n${detail}` : '') + cause);
-      setResult({ error: data?.error || 'Falha ao iniciar Mercado Pago', detail: detail || null, cause: data?.cause || null });
+      const rawDetail = data?.detail ?? data?.message ?? null;
+      const detail = typeof rawDetail === 'object' ? JSON.stringify(rawDetail, null, 2) : (rawDetail || '');
+      const causeText = Array.isArray(data?.cause) && data.cause.length ? `\nCausa: ${data.cause.map(c=>c.description||c.code).join(', ')}` : '';
+      alert((data?.error || 'Falha ao iniciar Mercado Pago') + (detail? `\n${detail}` : '') + causeText);
+      setResult({ error: data?.error || 'Falha ao iniciar Mercado Pago', detail: rawDetail || null, cause: data?.cause || null });
     } finally { setMpLoading(false); }
   };
 
@@ -278,9 +279,17 @@ export default function Checkout() {
               {paymentMethod==='pix' && pix && (
                 <div className={`pix-box ${pixStatus?.status==='approved' ? 'ok' : ''}`}>
                   <div className="pix-grid">
-                    {pix.qr_code_base64 && (
-                      <img src={`data:image/png;base64,${pix.qr_code_base64}`} alt="QR PIX" className="pix-qr" />
-                    )}
+                    {(() => {
+                      const code = pix.qr_code || pix.copy_and_paste;
+                      if (pix.qr_code_base64) {
+                        return (<img src={`data:image/png;base64,${pix.qr_code_base64}`} alt="QR PIX" className="pix-qr" />);
+                      }
+                      if (code) {
+                        const url = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(code)}`;
+                        return (<img src={url} alt="QR PIX" className="pix-qr" />);
+                      }
+                      return null;
+                    })()}
                     <div className="pix-info">
                       <div className="pix-title">PIX - Copia e Cola</div>
                       {typeof expiresIn === 'number' && (
@@ -290,8 +299,6 @@ export default function Checkout() {
                       <div className="pix-actions">
                         <button onClick={()=>{ navigator.clipboard.writeText(pix.copy_and_paste || pix.qr_code); }}>Copiar código</button>
                         {pix.ticket_url && <a href={pix.ticket_url} target="_blank" rel="noreferrer" className="btn-link">Abrir no app</a>}
-                        <button onClick={checkPixNow}>Atualizar status agora</button>
-                        <button onClick={()=> setShowPixDetails(s=>!s)}>Ver detalhes</button>
                       </div>
                       {pixStatus && (
                         <div className="muted" style={{marginTop:8}}>
@@ -301,13 +308,7 @@ export default function Checkout() {
                       {pix?.id && (
                         <div className="muted" style={{marginTop:4}}>payment_id: <code>{pix.id}</code></div>
                       )}
-                      {showPixDetails && (
-                        <pre style={{whiteSpace:'pre-wrap', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:8, padding:12, marginTop:8}}>
-{JSON.stringify({ id: pix?.id, ...pixStatus }, null, 2)}
-                        </pre>
-                      )}
-                      <div className="muted" style={{marginTop:8}}>Se o status ficar preso em pending por muito tempo, use o botão abaixo para confirmar manualmente (somente para testes):</div>
-                      <button onClick={confirmManually}>Confirmar manualmente (teste)</button>
+                      
                       <div className="muted" style={{marginTop:8}}>Após o pagamento, você será direcionado para a confirmação.</div>
                     </div>
                   </div>
@@ -369,7 +370,7 @@ export default function Checkout() {
           {result.error && <div className="error">{result.error}</div>}
           {result.detail && (
             <pre style={{whiteSpace:'pre-wrap', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:8, padding:12}}>
-{result.detail}
+{typeof result.detail === 'object' ? JSON.stringify(result.detail, null, 2) : String(result.detail)}
             </pre>
           )}
           {result.cause && Array.isArray(result.cause) && (
@@ -415,8 +416,9 @@ export default function Checkout() {
         .review .sep{ height:1px; background:#e5e7eb; margin:8px 0 }
         .review .total{ margin-top:8px; font-size:18px; font-weight:800; color:#065f46 }
         .terms{ display:flex; align-items:center; gap:8px; margin:10px 0; font-size:12px }
-        .cta{ width:100%; background:#111827; color:#fff; border:0; padding:12px; border-radius:10px; font-weight:800; cursor:pointer }
-        .cta:disabled{ background:#9ca3af; cursor:not-allowed }
+        .cta{ width:100%; background:#00AF42; color:#fff; border:0; padding:12px; border-radius:10px; font-weight:800; cursor:pointer; box-shadow:0 4px 14px rgba(0,175,66,.25) }
+        .cta:hover{ filter:brightness(.96) }
+        .cta:disabled{ background:#94d3ad; cursor:not-allowed; box-shadow:none }
         @media (max-width: 900px){ .grid{ grid-template-columns:1fr; } }
       `}</style>
     </div>
