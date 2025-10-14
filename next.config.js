@@ -1,25 +1,35 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Allow Next.js dev overlay and assets when accessed via Cloudflare Tunnel domain
-  allowedDevOrigins: [
-    'https://elephant-stainless-bedford-owen.trycloudflare.com',
-    'https://michel-marathon-spears-stream.trycloudflare.com',
-    'https://jobs-assumed-cancer-proof.trycloudflare.com',
-    'https://sims-accessing-bags-finish.trycloudflare.com',
-    'https://bra-parameter-acrobat-prime.trycloudflare.com',
-  ],
+  reactStrictMode: true,
+
+  // Libera domínios para <Image src="..."/>
+  // Ajuste/adicione os que você usa de fato
+  images: {
+    // Caso sua versão do Next suporte remotePatterns, prefira usar remotePatterns
+    domains: [
+      'api.premiosprime.site',
+      'images.unsplash.com',
+      'i.imgur.com',
+      'picsum.photos',
+    ],
+  },
+
   async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        // Use 127.0.0.1 to avoid potential ::1 (IPv6) connection issues
-        destination: 'http://127.0.0.1:4000/api/:path*', // proxy to backend
-      },
-      {
-        source: '/s/:slug',
-        destination: 'http://127.0.0.1:4000/:slug', // shortlink resolver
-      },
-    ];
+    // Em DEV, pode proxiar /api e /s para seu backend local
+    if (process.env.NODE_ENV === 'development') {
+      return [
+        {
+          source: '/api/:path*',
+          destination: 'http://127.0.0.1:4000/api/:path*',
+        },
+        {
+          source: '/s/:slug',
+          destination: 'http://127.0.0.1:4000/:slug',
+        },
+      ];
+    }
+    // Em PRODUÇÃO, nada de rewrites para 127.0.0.1
+    return [];
   },
 };
 
